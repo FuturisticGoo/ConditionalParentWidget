@@ -2,8 +2,6 @@ library conditional_parent_widget;
 
 import 'package:flutter/widgets.dart';
 
-typedef ParentBuilder = Widget Function(Widget child);
-
 /// {@template conditionalParent}
 /// Conditionally wrap a subtree with a parent widget without breaking the code tree.
 ///
@@ -49,34 +47,44 @@ typedef ParentBuilder = Widget Function(Widget child);
 /// );
 /// ```
 /// {@endtemplate}
-class ConditionalParentWidget extends StatelessWidget {
+class ConditionalParentWidget<T> extends StatelessWidget {
   /// {@macro conditionalParent}
-  const ConditionalParentWidget({
+  ConditionalParentWidget({
     super.key,
     required this.condition,
     required this.parentBuilder,
     this.parentBuilderElse,
     required this.child,
-  });
+  }) {
+    assert(child is Widget || child is List<Widget>);
+  }
 
   /// The [condition] which controls how/whether the [child] is wrapped.
   final bool condition;
 
   /// The [child] which should be conditionally wrapped.
-  final Widget child;
+  final T child;
 
   /// Builder to wrap [child] when [condition] is `true`.
-  final ParentBuilder? parentBuilder;
+  final Widget Function(T child) parentBuilder;
 
   /// Optional builder to wrap [child] when [condition] is `false`.
   ///
   /// [child] is returned directly when this is `null`.
-  final ParentBuilder? parentBuilderElse;
+  final Widget Function(T child)? parentBuilderElse;
 
   @override
   Widget build(BuildContext context) {
-    return condition //
-        ? parentBuilder?.call(child) ?? child
-        : parentBuilderElse?.call(child) ?? child;
+    if (condition) {
+      return parentBuilder.call(child);
+    } else {
+      if (parentBuilderElse != null) {
+        return parentBuilderElse!.call(child);
+      } else {
+        assert(T is Widget,
+            "child should be a Widget if parentBuilderElse is null");
+        return child as Widget;
+      }
+    }
   }
 }
