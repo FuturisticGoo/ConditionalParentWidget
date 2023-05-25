@@ -47,6 +47,11 @@ import 'package:flutter/widgets.dart';
 /// );
 /// ```
 /// {@endtemplate}
+
+
+// https://stackoverflow.com/a/69114947
+bool isSubtype<S, T>() => <S>[] is List<T>;
+
 class ConditionalParentWidget<T> extends StatelessWidget {
   /// {@macro conditionalParent}
   ConditionalParentWidget({
@@ -81,7 +86,7 @@ class ConditionalParentWidget<T> extends StatelessWidget {
       if (parentBuilderElse != null) {
         return parentBuilderElse!.call(child);
       } else {
-        assert(T is Widget,
+        assert(child is Widget,
             "child should be a Widget if parentBuilderElse is null");
         return child as Widget;
       }
