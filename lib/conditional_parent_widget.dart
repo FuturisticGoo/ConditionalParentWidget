@@ -48,10 +48,6 @@ import 'package:flutter/widgets.dart';
 /// ```
 /// {@endtemplate}
 
-
-// https://stackoverflow.com/a/69114947
-bool isSubtype<S, T>() => <S>[] is List<T>;
-
 class ConditionalParentWidget<T> extends StatelessWidget {
   /// {@macro conditionalParent}
   ConditionalParentWidget({
